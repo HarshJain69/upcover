@@ -23,7 +23,10 @@ export class AuthService {
     }
 
     const saltOrRounds = 10;
-    const hashedPassword = await bcrypt.hash(registerDto.password, saltOrRounds);
+    const hashedPassword = await bcrypt.hash(
+      registerDto.password,
+      saltOrRounds,
+    );
     const user = await this.usersService.create({
       email: registerDto.email,
       password: hashedPassword,
@@ -43,7 +46,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: user._id, email: user.email };
+    const payload = { sub: user._id, email: user.email, role: user.role };
     const token = await this.jwtService.signAsync(payload);
 
     return { access_token: token };
