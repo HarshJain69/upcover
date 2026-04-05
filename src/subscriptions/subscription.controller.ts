@@ -21,7 +21,7 @@ import { UserRole } from '../users/schemas/user.schema';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 
 @ApiTags('Subscriptions')
-@Controller('subscriptions')
+@Controller()
 export class SubscriptionController {
   constructor(
     private readonly subscriptionService: SubscriptionService,
@@ -36,7 +36,7 @@ export class SubscriptionController {
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Get('me')
+  @Get('subscription')
   @ApiOperation({ summary: 'Get current user subscription' })
   getMySubscription(@Req() req: Request) {
     return this.subscriptionService.getMySubscription(req['user'].sub);
@@ -44,7 +44,7 @@ export class SubscriptionController {
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Post('checkout')
+  @Post('subscription/checkout')
   @ApiOperation({ summary: 'Create a Stripe checkout session' })
   createCheckout(@Req() req: Request, @Body() dto: CreateSubscriptionDto) {
     return this.subscriptionService.createCheckoutSession(
@@ -55,7 +55,7 @@ export class SubscriptionController {
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Post('cancel')
+  @Post('subscription/cancel')
   @ApiOperation({ summary: 'Cancel active subscription' })
   cancelSubscription(@Req() req: Request) {
     return this.subscriptionService.cancelSubscription(req['user'].sub);
@@ -64,7 +64,7 @@ export class SubscriptionController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
-  @Get('all')
+  @Get('subscription/all')
   @ApiOperation({ summary: 'Get all subscriptions (admin only)' })
   getAllSubscriptions() {
     return this.subscriptionService.getAllSubscriptions();

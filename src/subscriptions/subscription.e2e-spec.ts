@@ -52,10 +52,10 @@ describe('Subscriptions (e2e)', () => {
     await app.close();
   });
 
-  describe('GET /subscriptions/plans', () => {
+  describe('GET /plans', () => {
     it('should return all plans', () => {
       return request(app.getHttpServer())
-        .get('/subscriptions/plans')
+        .get('/plans')
         .expect(200)
         .expect((res) => {
           expect(res.body).toHaveLength(3);
@@ -64,17 +64,17 @@ describe('Subscriptions (e2e)', () => {
     });
   });
 
-  describe('POST /subscriptions/checkout', () => {
+  describe('POST /subscription/checkout', () => {
     it('should reject without auth', () => {
       return request(app.getHttpServer())
-        .post('/subscriptions/checkout')
+        .post('/subscription/checkout')
         .send({ planId: 'basic' })
         .expect(401);
     });
 
     it('should reject invalid planId', () => {
       return request(app.getHttpServer())
-        .post('/subscriptions/checkout')
+        .post('/subscription/checkout')
         .set('Authorization', `Bearer ${jwtToken}`)
         .send({ planId: 'invalid' })
         .expect(400);
@@ -82,7 +82,7 @@ describe('Subscriptions (e2e)', () => {
 
     it('should return checkout URL for valid plan', () => {
       return request(app.getHttpServer())
-        .post('/subscriptions/checkout')
+        .post('/subscription/checkout')
         .set('Authorization', `Bearer ${jwtToken}`)
         .send({ planId: 'basic' })
         .expect(201)
@@ -93,14 +93,14 @@ describe('Subscriptions (e2e)', () => {
     });
   });
 
-  describe('POST /subscriptions/webhook', () => {
+  describe('POST /webhook', () => {
     it('should reject invalid signature', () => {
       mockStripeService.constructWebhookEvent.mockImplementation(() => {
         throw new Error('Invalid signature');
       });
 
       return request(app.getHttpServer())
-        .post('/subscriptions/webhook')
+        .post('/webhook')
         .set('stripe-signature', 'bad-sig')
         .set('Content-Type', 'application/json')
         .send('{}')
@@ -120,7 +120,7 @@ describe('Subscriptions (e2e)', () => {
       });
 
       return request(app.getHttpServer())
-        .post('/subscriptions/webhook')
+        .post('/webhook')
         .set('stripe-signature', 'valid-sig')
         .set('Content-Type', 'application/json')
         .send('{"type":"checkout.session.completed"}')
@@ -131,16 +131,16 @@ describe('Subscriptions (e2e)', () => {
     });
   });
 
-  describe('GET /subscriptions/me', () => {
+  describe('GET /subscription', () => {
     it('should reject without auth', () => {
-      return request(app.getHttpServer()).get('/subscriptions/me').expect(401);
+      return request(app.getHttpServer()).get('/subscription').expect(401);
     });
   });
 
-  describe('GET /subscriptions/all', () => {
+  describe('GET /subscription/all', () => {
     it('should reject for non-admin users', () => {
       return request(app.getHttpServer())
-        .get('/subscriptions/all')
+        .get('/subscription/all')
         .set('Authorization', `Bearer ${jwtToken}`)
         .expect(403);
     });

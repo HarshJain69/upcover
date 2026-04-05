@@ -21,7 +21,7 @@ export const PLANS: Plan[] = [
     name: capitalize(PlanId.BASIC),
     price: 999,
     currency: 'USD',
-    stripePriceId: 'price_basic_REPLACE_ME',
+    stripePriceId: 'price_1TIsexSC1VnJZOg6nSoyoZc2', // Basic $9.99/mo
     features: ['Up to 1 user', 'Basic support', '10 GB storage'],
   },
   {
@@ -29,7 +29,7 @@ export const PLANS: Plan[] = [
     name: capitalize(PlanId.STANDARD),
     price: 1999,
     currency: 'USD',
-    stripePriceId: 'price_standard_REPLACE_ME',
+    stripePriceId: 'price_1TIsfqSC1VnJZOg6JXSBSEaX', // Standard $19.99/mo
     features: ['Up to 5 users', 'Priority support', '50 GB storage'],
   },
   {
@@ -37,7 +37,7 @@ export const PLANS: Plan[] = [
     name: capitalize(PlanId.PREMIUM),
     price: 3999,
     currency: 'USD',
-    stripePriceId: 'price_premium_REPLACE_ME',
+    stripePriceId: 'price_1TIsg9SC1VnJZOg6QFVHhYg9', // Premium $39.99/mo
     features: ['Unlimited users', '24/7 support', '500 GB storage'],
   },
 ];

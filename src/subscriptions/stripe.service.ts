@@ -78,6 +78,14 @@ export class StripeService {
 
   constructWebhookEvent(payload: Buffer, signature: string): StripeEvent {
     const stripe = this.ensureStripe();
+
+    if (!this.webhookSecret) {
+      this.logger.warn(
+        'STRIPE_WEBHOOK_SECRET not set — skipping signature verification',
+      );
+      return JSON.parse(payload.toString()) as StripeEvent;
+    }
+
     try {
       return stripe.webhooks.constructEvent(
         payload,

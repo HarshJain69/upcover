@@ -104,9 +104,15 @@ export class SubscriptionService {
     }
 
     if (subscription.stripeSubscriptionId) {
-      await this.stripeService.cancelSubscription(
-        subscription.stripeSubscriptionId,
-      );
+      try {
+        await this.stripeService.cancelSubscription(
+          subscription.stripeSubscriptionId,
+        );
+      } catch (err) {
+        this.logger.warn(
+          `Failed to cancel Stripe subscription ${subscription.stripeSubscriptionId}: ${err}`,
+        );
+      }
     }
 
     subscription.status = 'canceled';
@@ -165,10 +171,16 @@ export class SubscriptionService {
     let currentPeriodEnd: Date | undefined;
 
     if (stripeSubscriptionId) {
-      const stripeSub =
-        await this.stripeService.getSubscription(stripeSubscriptionId);
-      if (stripeSub.current_period_end) {
-        currentPeriodEnd = new Date(stripeSub.current_period_end * 1000);
+      try {
+        const stripeSub =
+          await this.stripeService.getSubscription(stripeSubscriptionId);
+        if (stripeSub.current_period_end) {
+          currentPeriodEnd = new Date(stripeSub.current_period_end * 1000);
+        }
+      } catch (err) {
+        this.logger.warn(
+          `Failed to fetch subscription ${stripeSubscriptionId} from Stripe: ${err}`,
+        );
       }
     }
 
@@ -197,13 +209,20 @@ export class SubscriptionService {
 
     if (!subscription) return;
 
-    const stripeSub =
-      await this.stripeService.getSubscription(stripeSubscriptionId);
-    subscription.status = 'active';
-    if (stripeSub.current_period_end) {
-      subscription.currentPeriodEnd = new Date(
-        stripeSub.current_period_end * 1000,
+    try {
+      const stripeSub =
+        await this.stripeService.getSubscription(stripeSubscriptionId);
+      subscription.status = 'active';
+      if (stripeSub.current_period_end) {
+        subscription.currentPeriodEnd = new Date(
+          stripeSub.current_period_end * 1000,
+        );
+      }
+    } catch (err) {
+      this.logger.warn(
+        `Failed to fetch subscription ${stripeSubscriptionId} from Stripe: ${err}`,
       );
+      subscription.status = 'active';
     }
     await subscription.save();
   }

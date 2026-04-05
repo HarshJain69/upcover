@@ -69,12 +69,12 @@ Once running, open [http://localhost:3000/api](http://localhost:3000/api) to exp
 
 | Method | Endpoint                 | Auth       | Description                         |
 | ------ | ------------------------ | ---------- | ----------------------------------- |
-| GET    | `/subscriptions/plans`   | No         | List all available plans             |
-| GET    | `/subscriptions/me`      | JWT        | Get current user's subscription      |
-| POST   | `/subscriptions/checkout`| JWT        | Create a Stripe checkout session     |
-| POST   | `/subscriptions/cancel`  | JWT        | Cancel active subscription           |
-| GET    | `/subscriptions/all`     | JWT + Admin| List all subscriptions (admin only)  |
-| POST   | `/subscriptions/webhook` | No (Stripe)| Stripe webhook receiver              |
+| GET    | `/plans`                 | No         | List all available plans             |
+| GET    | `/subscription`          | JWT        | Get current user's subscription      |
+| POST   | `/subscription/checkout` | JWT        | Create a Stripe checkout session     |
+| POST   | `/subscription/cancel`   | JWT        | Cancel active subscription           |
+| GET    | `/subscription/all`      | JWT + Admin| List all subscriptions (admin only)  |
+| POST   | `/webhook`               | No (Stripe)| Stripe webhook receiver              |
 
 ### Request Examples
 
@@ -94,12 +94,12 @@ curl -X POST http://localhost:3000/login \
 
 **Get Plans:**
 ```bash
-curl http://localhost:3000/subscriptions/plans
+curl http://localhost:3000/plans
 ```
 
 **Create Checkout (requires JWT):**
 ```bash
-curl -X POST http://localhost:3000/subscriptions/checkout \
+curl -X POST http://localhost:3000/subscription/checkout \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{"planId": "basic"}'
